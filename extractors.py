@@ -1,7 +1,16 @@
 from bs4 import BeautifulSoup
 
+# check ip at http://jsonip.com
+
+# past proxy address
+proxies = {
+    "http": "http://username:password@host:port",
+    "https": "http://username:password@host:port"
+}
+
 def lyricmint(request, page_url)->dict:
-    page = request.get(page_url)
+    page = request.get(page_url, proxies=proxies)
+
     page.raise_for_status()
 
     soup = BeautifulSoup(page.text, "html.parser")

@@ -17,7 +17,7 @@ def bootstrap():
             use_cache = (input("use cache data ?: ") != "") or False
         
         return target, target_url, url_list_file, use_cache
-    except KeyboardInterrupt as e:
+    except:
         print("Keyboard interupt")
         sys.exit(1)
 

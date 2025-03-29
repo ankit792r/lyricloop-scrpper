@@ -7,23 +7,15 @@ import os
 
 TMEP_FILE_PATH = "temp/data.json"
 
-def execute_scraping(session, url):
-    try:
-        return lyricmint(session, url)
-    except RequestException as e:
-        print(f"Failed to fetch {url}: {e}")
-        return None
-
 def scrap_data(url_list: list):
     data = []
     session = Session()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10, thread_name_prefix="work") as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=200, thread_name_prefix="worker") as executor:
         scrap_function = partial(lyricmint, session)
         for result in executor.map(scrap_function, url_list):
-            print("extracted - ", "\r")
             if result:
-                print(result["name"])
+                print("extracted - ", result["name"])
                 data.append(result)
 
     with open(TMEP_FILE_PATH, "w+") as file:
@@ -67,7 +59,7 @@ def upload_to_db(url:str):
         database = connector.connect(**config)
         cursor = database.cursor()
         
-        query = "INSERT INTO song (name, album, lyrics_by, sung_by, slug, image, lyrics, video) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT IGNORE INTO song (name, album, lyrics_by, sung_by, slug, image, lyrics, video) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         
         cursor.executemany(query, data)
         database.commit()

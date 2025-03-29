@@ -36,3 +36,9 @@ def resolve_target(target:str, target_url:str):
         return upload_to_db(url=target_url)
     else:
         raise Exception("Invalid target.")
+
+def parse_link_file():
+    file = open("temp/song_links.txt", "r")
+    links = file.read().split(",")
+    file.close()
+    return links

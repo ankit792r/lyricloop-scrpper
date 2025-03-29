@@ -1,4 +1,4 @@
-from utils import get_urls, bootstrap, resolve_target
+from utils import get_urls, bootstrap, resolve_target, parse_link_file
 from worker import scrap_data
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
-import requests, time, json
-from requests import RequestException
+import requests, time, json, re
+from pprint import pprint
 
 # check ip at http://jsonip.com
 
@@ -10,6 +10,7 @@ proxies = {
     "https": "http://username:password@host:port"
 }
 
+# ------------ lyricsmint
 def lyricmint(request, page_url)->dict:
     try:
         page = request.get(page_url, proxies=proxies)
@@ -50,8 +51,7 @@ def lyricmint(request, page_url)->dict:
         print(f"failed to fetch {page_url}")
         return None
 
-def song_link_extractor():
-    page = 20
+def lyricsmint_link_extractor(page = 20):
     base_url = "https://lyricsmint.com"
     song_links = []
 
@@ -87,8 +87,79 @@ def song_link_extractor():
         except:
             pass
 
-    with open("temp/song_links.json", "w+") as file:
-        json.dump(song_links, file)
+    with open("temp/song_links.txt", "a") as file:
+        file.write(",".join(song_links))
+        file.write(",")
 
+#------------- lyricswings
+def extract_video_id(url: str) -> str:
+    match = re.search(r"embed/([^?]+)", url)
+    return match.group(1) if match else ""
 
-# song_link_extractor()
+def lyricalwings(page_url)->dict:
+    try:
+        page = requests.get(page_url, proxies=proxies)
+
+        page.raise_for_status()
+
+        soup = BeautifulSoup(page.text, "html.parser")
+
+        song_data = {}
+
+        try:
+            iframe = soup.find("iframe")
+
+            video_id = extract_video_id(iframe.attrs["src"])
+
+            song_data["thumbnail"] = f"https://i.ytimg.com/vi_webp/{video_id}/maxresdefault.webp"
+
+            song_data["video"] = f"https://www.youtube.com/watch?v={video_id}"
+        except:
+            song_data["thumbnail"] = ""
+
+            song_data["video"] = ""
+
+        lyrics_tag = soup.find("div", {"id": "englishlyrics"})
+
+        song_data["lyrics"] = "".join([str(i) for i in lyrics_tag.find_all("p")])
+
+        table_tag = soup.find("table", {"id": "topic_table"})
+
+        td_tags = table_tag.find_all("td", {"style": "width: 70%; height: 19px;"}, limit=4)
+
+        song_data["name"] = td_tags[0].text
+        song_data["album"] = td_tags[1].text
+        song_data["sungBy"] = td_tags[2].text
+        song_data["lyricsBy"] = td_tags[3].text
+
+        return song_data
+
+    except Exception as e:
+        print(e)
+
+def lyricswing_link_extractor(page = 10):
+    song_links = []
+
+    for i in range(1, page):
+        try:
+            page_data = requests.get(f"https://lyricalwings.com/page/{i}/", proxies=proxies)
+            
+            page_data.raise_for_status()
+
+            page_soup = BeautifulSoup(page_data.text, "html.parser")
+
+            articles = page_soup.find_all("article")
+
+            for article in articles[:2]:
+                try:
+                    link_tag = article.find("a")
+                    song_links.append(link_tag.attrs["href"])
+                except Exception as e:
+                    print(e)
+
+        except Exception as e:
+            print(f"failed to fetch page {i}, {e}")
+
+    with open("temp/song_links.txt", "a") as file:
+        file.write(",".join(song_links))
+        file.write(",")

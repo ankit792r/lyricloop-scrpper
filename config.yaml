@@ -1,0 +1,10 @@
+data_scrappers:
+  - name: lyricmint
+    path: scrappers.data.lyricmint_scrapper
+    class: LyricMintDataScrapper
+
+
+link_scrappers:
+  - name: lyricmint
+    path: scrappers.link.lyricmint_scrapper
+    class: LyricMintLinkScrapper

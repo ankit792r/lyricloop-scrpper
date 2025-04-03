@@ -33,6 +33,6 @@ class BaseLinkScrapper(ABC):
         return [link for link in cursor.fetchall()]
 
 
-conn = connect("temp/data.db", check_same_thread=False)
-base = BaseLinkScrapper(connection=conn)
-print(base.get_links(limit=1, offset=1))
+# conn = connect("temp/data.db", check_same_thread=False)
+# base = BaseLinkScrapper(connection=conn)
+# print(base.get_links(limit=1, offset=1))

@@ -1,24 +1,25 @@
-from requests import sessions
+from requests import Session
 from sqlite3 import connect
 from importlib import import_module
-
+from scrappers.link.base_scrapper import BaseLinkScrapper
+from scrappers.data.base_scrapper import BaseDataScrapper
+from concurrent.futures import ThreadPoolExecutor, wait, as_completed
+from pprint import pprint
+import yaml
+from threading import Thread
 
 class ScrapperApp:
     db_name = "scrap_data.db"
     def __init__(self, configs:dict):
         self.configs = configs
-        self.session = sessions()
+        self.session = Session()
         # TODO add proxy
         self.conn = connect(f"temp/{self.db_name}", check_same_thread=False)
-        
 
-    def scrap_links(self):
-        pass
+        data_scrappers, link_scrappers = self.load_scrappers()
 
-    def scrap_data(self):
-        pass
+        self.scrap_links(link_scrappers)
 
-    
 
     def load_scrappers(self):
         data_scrappers = {}
@@ -36,9 +37,29 @@ class ScrapperApp:
             link_scrappers[scrapper["name"]] = klass(self.conn, self.session)
 
         return data_scrappers, link_scrappers
+    
+    def scrap_links(self, link_scrappers:dict):
 
-# with open("config.yaml", "r") as cfile:
-#     config = yaml.safe_load(cfile)
+        with ThreadPoolExecutor(max_workers=len(link_scrappers.keys())) as executor:
+            futures = []
+            
+            for key in link_scrappers.keys():
+                scrapper_class:BaseLinkScrapper = link_scrappers[key]
+                futures.append(executor.submit(scrapper_class.extract_link, 1))
 
-# print(config)
+            as_completed(futures)
+
+            print("after that")
+
+            # for i in as_completed(futures):
+            #     pprint(i.result())
+            
+
+    def scrap_data(self):
+        pass
+
+with open("config.yaml", "r") as cfile:
+    config = yaml.safe_load(cfile)
+
+ScrapperApp(config)
 

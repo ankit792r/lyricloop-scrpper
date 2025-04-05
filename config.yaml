@@ -5,7 +5,7 @@ proxies:
 
 db_url: ${{ secrets.REMOTE_DB }}
 
-workers: $WORKERS
+workers: ${{ env.WORKERS }}
 
 data_scrappers:
   - name: lyricsmint

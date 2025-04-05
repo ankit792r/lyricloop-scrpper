@@ -8,5 +8,5 @@ with open("config.yaml", "r") as cfile:
 if __name__ == "__main__":
     app = ScrapperApp(config)
     app.scrap_links()
-    app.scrap_data(workers=config["workers"])
+    app.scrap_data(workers=int(config["workers"]))
     app.upload()

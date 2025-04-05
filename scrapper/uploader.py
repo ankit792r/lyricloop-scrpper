@@ -18,16 +18,24 @@ def upload_to_db(url:str, conn: Connection):
         database = connector.connect(**config)
         cursor = database.cursor()
 
-        query = "INSERT IGNORE INTO song (name, album, lyrics_by, sung_by, slug, image, lyrics, video) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        query = "INSERT IGNORE INTO song (slug, name, lyrics, album, sung_by, lyrics_by, image, video) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
-        lite_cursor = conn.execute("select * from song_data")
-        for res in lite_cursor.fetchmany(30):
-            cursor.executemany(query, res)
+        batch_size =50
+        offset = 0
+
+        while True:
+            lite_cursor = conn.execute("select * from song_data limit ? offset ?", (batch_size, offset, ))
+            rows = lite_cursor.fetchall()
+            if not rows: break
+
+            cursor.executemany(query, rows)
             database.commit()
+            logger.info(f"Successfully uploaded offset {offset}")
+            offset += batch_size
 
         database.close()
-        logger.info(f"Successfully uploaded to {url}")
+        logger.info(f"Successfully uploaded all data to remote")
     except Exception as e:
-        print(e)
+        logger.error(f"something went wrong to upload {e}")
 
 

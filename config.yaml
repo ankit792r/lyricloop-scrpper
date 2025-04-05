@@ -1,11 +1,11 @@
 
 proxies:
-  http: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
-  https: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
+  http: ${{ secrets.PROXY }}
+  https: ${{ secrets.PROXY }}
 
-db_url: mysql://u530869612_ankit:lyricL00P@srv1833.hstgr.io/u530869612_lyricloop
+db_url: ${{ secrets.REMOTE_DB }}
 
-workers: 10
+workers: $WORKERS
 
 data_scrappers:
   - name: lyricsmint

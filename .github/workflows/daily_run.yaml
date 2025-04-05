@@ -12,7 +12,7 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       PROXIES: ${{ secrets.PROXIES }}
-      WORKERS: ${{ secrets.WORKERS }}
+      WORKERS: $WORKERS
 
     steps:
       - name: Checkout code

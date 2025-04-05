@@ -1,35 +1,32 @@
 from requests import Session
 from sqlite3 import connect
 from importlib import import_module
+from data.uploader import upload_to_db
 from scrappers.link.base_scrapper import BaseLinkScrapper
 from scrappers.data.base_scrapper import BaseDataScrapper
-from concurrent.futures import ThreadPoolExecutor, wait, as_completed
-from pprint import pprint
+from concurrent.futures import ThreadPoolExecutor, wait
+from scrappers.utils import get_links, save_data
 import yaml
-from threading import Thread
 
 class ScrapperApp:
     db_name = "scrap_data.db"
     def __init__(self, configs:dict):
         self.configs = configs
         self.session = Session()
-        # TODO add proxy
+        self.session.proxies = configs["proxies"]
         self.conn = connect(f"temp/{self.db_name}", check_same_thread=False)
 
-        data_scrappers, link_scrappers = self.load_scrappers()
-
-        self.scrap_links(link_scrappers)
-
+        self.data_scrappers, self.link_scrappers = self.load_scrappers()
 
     def load_scrappers(self):
-        data_scrappers = {}
+        data_scrappers:dict[str, BaseDataScrapper] = {}
 
         for scrapper in self.configs["data_scrappers"]:
             ref = import_module(scrapper["path"])
             klass = getattr(ref, scrapper["class"])
             data_scrappers[scrapper["name"]] = klass(self.conn, self.session)
 
-        link_scrappers = {}
+        link_scrappers:dict[str, BaseLinkScrapper] = {}
 
         for scrapper in self.configs["link_scrappers"]:
             ref = import_module(scrapper["path"])
@@ -38,28 +35,29 @@ class ScrapperApp:
 
         return data_scrappers, link_scrappers
     
-    def scrap_links(self, link_scrappers:dict):
-
-        with ThreadPoolExecutor(max_workers=len(link_scrappers.keys())) as executor:
+    def scrap_links(self, page = 1):
+        with ThreadPoolExecutor(max_workers=len(self.link_scrappers.keys())) as executor:
             futures = []
-            
-            for key in link_scrappers.keys():
-                scrapper_class:BaseLinkScrapper = link_scrappers[key]
-                futures.append(executor.submit(scrapper_class.extract_link, 1))
+            for key in self.link_scrappers.keys():
+                scrapper_class:BaseLinkScrapper = self.link_scrappers[key]
+                futures.append(executor.submit(scrapper_class.extract_link, page))
+            wait(futures)
 
-            as_completed(futures)
+    def __resolve_scrapper(self, row:tuple[str, str]):
+        return self.data_scrappers[row[0]].scrap_data(row[1])
 
-            print("after that")
+    def scrap_data(self, workers=10):
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            for result in executor.map(self.__resolve_scrapper, get_links(self.conn)):
+                if result:
+                    save_data(self.conn, result)
 
-            # for i in as_completed(futures):
-            #     pprint(i.result())
-            
-
-    def scrap_data(self):
-        pass
+    def upload(self):
+        upload_to_db(self.configs["db_url"], self.conn)
 
 with open("config.yaml", "r") as cfile:
     config = yaml.safe_load(cfile)
 
-ScrapperApp(config)
-
+app = ScrapperApp(config)
+# app.scrap_links()
+app.scrap_data()

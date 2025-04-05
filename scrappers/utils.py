@@ -1,10 +1,16 @@
-from concurrent.futures import ThreadPoolExecutor
-from scrappers.data.base_scrapper import BaseDataScrapper
+from sqlite3 import Connection
 
-def resolve_scrappers(scrappers:dict[str, BaseDataScrapper],):
-    pass
+def get_links(conn:Connection, **kwargs)-> list[tuple[str, str]]:
+    query = f"select site, link from datalink "
+    if kwargs.get("site") is not None: query += f"where site=? "
+    if kwargs.get("limit") is not None and kwargs.get("offset") is not None: 
+        query += f"limit ? offset ?"
 
-def init_scrapping(scrappers:dict[str, BaseDataScrapper] ,links:list[tuple[str, str]]=[], workers=10):
-    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="worker_") as executor:
-        executor.map((...), links)
+    cursor = conn.execute(query, [v for _, v in kwargs.items()])
+    return [link for link in cursor.fetchall()]
 
+def save_data(conn:Connection, data:list):
+    query = f"insert into song_data(slug, name, lyrics, album, sungBy, lyricsBy, image, video) values(?, ?, ?, ?, ?, ?, ?, ?)"
+    conn.execute(query, data)
+    conn.commit()
+    print("saved -", data[0])

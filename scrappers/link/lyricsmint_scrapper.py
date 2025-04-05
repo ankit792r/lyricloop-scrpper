@@ -1,8 +1,8 @@
 from scrappers.link.base_scrapper import BaseLinkScrapper
 from bs4 import BeautifulSoup
 
-class LyricMintLinkScrapper(BaseLinkScrapper):
-    scrapper_name ="lyricsmint"
+class LyricsMintLinkScrapper(BaseLinkScrapper):
+    scrapper_name = "lyricsmint"
 
     def __init__(self, connection, session):
         super().__init__(connection, session)
@@ -43,3 +43,4 @@ class LyricMintLinkScrapper(BaseLinkScrapper):
                         print(f"failed to extract links from {album}")
             except:
                 print(f"failed to extract links from page {i}")
+        self.insert_links(links=links)

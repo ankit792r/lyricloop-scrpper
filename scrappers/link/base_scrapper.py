@@ -3,16 +3,13 @@ from sqlite3 import Connection, connect
 from requests import Session
 
 class BaseLinkScrapper(ABC):
-    table_name = "datalink"
+    table_name = "data_link"
     def __init__(self, connection: Connection, session: Session):
         self.connection = connection
         self.session = session
-        self.proxies = {}
         
-        query = f"create table if not exists {self.table_name}(id integer primary key autoincrement, site varchar(120), link varchar(255))"
+        query = f"create table if not exists {self.table_name}(site varchar(120), link varchar(255))"
         self.connection.execute(query)
-        # self.connection.executemany("insert into datalink(site, link) values(?, ?)", [("test", "temp"), ("test1", "temp2")])
-        # self.connection.commit()
 
     @abstractmethod
     def extract_link(self, page:int = None):

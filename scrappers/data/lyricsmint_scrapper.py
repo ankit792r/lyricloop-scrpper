@@ -1,14 +1,14 @@
 from scrappers.data.base_scrapper import BaseDataScrapper
 from bs4 import BeautifulSoup
 
-class LyricMintDataScrapper(BaseDataScrapper): 
+class LyricsMintDataScrapper(BaseDataScrapper): 
 
     def __init__(self, connection, session):
         super().__init__(connection, session)
 
-    def scrap_data(self, link):
+    def scrap_data(self, link) ->list | None:
         try:
-            page = self.session.get(link, proxies=self.proxies)
+            page = self.session.get(link)
 
             page.raise_for_status()
 
@@ -37,10 +37,7 @@ class LyricMintDataScrapper(BaseDataScrapper):
             else:
                 video = ""
                 image = ""
-
-            data = [slug, name, lyrics, album, sungBy, lyricsBy, image, video]
-            self.save_data(data=data)
-
+            return [slug, name, lyrics, album, sungBy, lyricsBy, image, video]
         except Exception as e:
             print(f"failed to scrap {link}, {e}")
             return None

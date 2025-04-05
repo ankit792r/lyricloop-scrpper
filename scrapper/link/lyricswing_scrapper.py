@@ -1,4 +1,4 @@
-from scrappers.link.base_scrapper import BaseLinkScrapper
+from scrapper.link.base_scrapper import BaseLinkScrapper
 from bs4 import BeautifulSoup
 
 class LyricsWingLinkScrapper(BaseLinkScrapper):

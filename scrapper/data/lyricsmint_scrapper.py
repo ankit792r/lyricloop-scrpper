@@ -1,4 +1,4 @@
-from scrappers.data.base_scrapper import BaseDataScrapper
+from scrapper.data.base_scrapper import BaseDataScrapper
 from bs4 import BeautifulSoup
 
 class LyricsMintDataScrapper(BaseDataScrapper): 

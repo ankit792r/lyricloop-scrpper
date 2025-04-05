@@ -2,16 +2,18 @@ from sqlite3 import Connection
 
 from bs4 import BeautifulSoup
 from requests import Session
-from scrappers.data.base_scrapper import BaseDataScrapper
+from scrapper.data.base_scrapper import BaseDataScrapper
 import re
+
+
+def extract_video_id(url: str) -> str:
+    match = re.search(r"embed/([^?]+)", url)
+    return match.group(1) if match else ""
+
 
 class LyricsWingDataScrapper(BaseDataScrapper):
     def __init__(self, connection: Connection, session: Session):
         super().__init__(connection, session)
-
-    def extract_video_id(self, url: str) -> str:
-        match = re.search(r"embed/([^?]+)", url)
-        return match.group(1) if match else ""
 
     def scrap_data(self, link:str) -> list | None:
         try:
@@ -21,12 +23,10 @@ class LyricsWingDataScrapper(BaseDataScrapper):
 
             soup = BeautifulSoup(page.text, "html.parser")
 
-            song_data = {}
-
             try:
                 iframe = soup.find("iframe")
 
-                video_id = self.extract_video_id(iframe.attrs["src"])
+                video_id = extract_video_id(iframe.attrs["src"])
 
                 thumbnail = f"https://i.ytimg.com/vi_webp/{video_id}/maxresdefault.webp"
 
@@ -51,6 +51,6 @@ class LyricsWingDataScrapper(BaseDataScrapper):
 
             slug = name.replace(" ", "-").lower() + album.replace(" ", "-").lower() + sungBy.replace(" ", "-").lower()
 
-            return [slug, name, lyrics, album, sungBy, lyricsBy, image, video]
+            return [slug, name, lyrics, album, sungBy, lyricsBy, thumbnail, video]
         except Exception as e:
             print(e)

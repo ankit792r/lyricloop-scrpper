@@ -1,7 +1,7 @@
 from sqlite3 import Connection
 
 def get_links(conn:Connection, **kwargs)-> list[tuple[str, str]]:
-    query = f"select site, link from datalink "
+    query = f"select site, link from data_link "
     if kwargs.get("site") is not None: query += f"where site=? "
     if kwargs.get("limit") is not None and kwargs.get("offset") is not None: 
         query += f"limit ? offset ?"

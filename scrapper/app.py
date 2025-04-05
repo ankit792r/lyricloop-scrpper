@@ -1,15 +1,14 @@
 from requests import Session
 from sqlite3 import connect
 from importlib import import_module
-from data.uploader import upload_to_db
-from scrappers.link.base_scrapper import BaseLinkScrapper
-from scrappers.data.base_scrapper import BaseDataScrapper
+from scrapper.uploader import upload_to_db
+from scrapper.link.base_scrapper import BaseLinkScrapper
+from scrapper.data.base_scrapper import BaseDataScrapper
 from concurrent.futures import ThreadPoolExecutor, wait
-from scrappers.utils import get_links, save_data
-import yaml
+from scrapper.utils import get_links, save_data
 
 class ScrapperApp:
-    db_name = "scrap_data.db"
+    db_name = "data.db"
     def __init__(self, configs:dict):
         self.configs = configs
         self.session = Session()
@@ -54,10 +53,3 @@ class ScrapperApp:
 
     def upload(self):
         upload_to_db(self.configs["db_url"], self.conn)
-
-with open("config.yaml", "r") as cfile:
-    config = yaml.safe_load(cfile)
-
-app = ScrapperApp(config)
-# app.scrap_links()
-app.scrap_data()

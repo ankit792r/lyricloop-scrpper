@@ -3,14 +3,16 @@ proxies:
   http: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
   https: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
 
-db_url: ""
+db_url: mysql://u530869612_ankit:lyricL00P@srv1833.hstgr.io/u530869612_lyricloop
+
+workers: 10
 
 data_scrappers:
   - name: lyricsmint
-    path: scrappers.data.lyricsmint_scrapper
+    path: scrapper.data.lyricsmint_scrapper
     class: LyricsMintDataScrapper
 
 link_scrappers:
   - name: lyricsmint
-    path: scrappers.link.lyricsmint_scrapper
+    path: scrapper.link.lyricsmint_scrapper
     class: LyricsMintLinkScrapper

@@ -1,4 +1,4 @@
-from scrappers.link.base_scrapper import BaseLinkScrapper
+from scrapper.link.base_scrapper import BaseLinkScrapper
 from bs4 import BeautifulSoup
 
 class LyricsMintLinkScrapper(BaseLinkScrapper):
@@ -12,7 +12,7 @@ class LyricsMintLinkScrapper(BaseLinkScrapper):
         base_url = "https://lyricsmint.com"
         for i in range(1, page + 1):
             try:
-                album_list_page = self.session.get(f"https://lyricsmint.com/albums?page={i}", proxies=self.proxies)
+                album_list_page = self.session.get(f"https://lyricsmint.com/albums?page={i}")
 
                 album_list_page.raise_for_status()
 
@@ -24,7 +24,7 @@ class LyricsMintLinkScrapper(BaseLinkScrapper):
 
                 for album in album_links:
                     try: 
-                        songs_list_page = self.session.get(album, proxies=self.proxies)
+                        songs_list_page = self.session.get(album)
 
                         songs_list_page.raise_for_status()
 
@@ -36,7 +36,7 @@ class LyricsMintLinkScrapper(BaseLinkScrapper):
                             if len(links) == 30:
                                 self.insert_links(links=links)
                                 links = []
-                            print(link.attrs["href"])
+                            print("[LINK]", link.attrs["href"])
                             links.append((self.scrapper_name, base_url + link.attrs["href"]))
 
                     except:

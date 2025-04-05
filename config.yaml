@@ -1,0 +1,16 @@
+
+proxies:
+  http: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
+  https: "http://teine:kL>+FCW4S^TSR'G@us-ca.proxymesh.com:31280"
+
+db_url: ""
+
+data_scrappers:
+  - name: lyricsmint
+    path: scrappers.data.lyricsmint_scrapper
+    class: LyricsMintDataScrapper
+
+link_scrappers:
+  - name: lyricsmint
+    path: scrappers.link.lyricsmint_scrapper
+    class: LyricsMintLinkScrapper

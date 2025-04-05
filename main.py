@@ -9,4 +9,4 @@ if __name__ == "__main__":
     app = ScrapperApp(config)
     app.scrap_links()
     app.scrap_data(workers=config["workers"])
-    #app.upload()
+    app.upload()

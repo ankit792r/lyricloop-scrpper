@@ -1,7 +1,7 @@
 from mysql import connector
 from urllib.parse import urlparse
 from sqlite3 import Connection
-
+from logger import logger
 
 def upload_to_db(url:str, conn: Connection):
     parsed = urlparse(url)
@@ -26,6 +26,7 @@ def upload_to_db(url:str, conn: Connection):
             database.commit()
 
         database.close()
+        logger.info(f"Successfully uploaded to {url}")
     except Exception as e:
         print(e)
 

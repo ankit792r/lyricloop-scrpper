@@ -1,5 +1,6 @@
 from scrapper.data.base_scrapper import BaseDataScrapper
 from bs4 import BeautifulSoup
+from logger import logger
 
 class LyricsMintDataScrapper(BaseDataScrapper): 
 
@@ -39,5 +40,5 @@ class LyricsMintDataScrapper(BaseDataScrapper):
                 image = ""
             return [slug, name, lyrics, album, sungBy, lyricsBy, image, video]
         except Exception as e:
-            print(f"failed to scrap {link}, {e}")
+            logger.error(f"failed to scrap {link}, {e}")
             return None

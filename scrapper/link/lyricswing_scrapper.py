@@ -1,5 +1,6 @@
 from scrapper.link.base_scrapper import BaseLinkScrapper
 from bs4 import BeautifulSoup
+from logger import logger
 
 class LyricsWingLinkScrapper(BaseLinkScrapper):
     scrapper_name = "lyricswing"
@@ -28,8 +29,8 @@ class LyricsWingLinkScrapper(BaseLinkScrapper):
                             song_links = []
                         song_links.append((self.scrapper_name, link_tag.attrs["href"]))
                     except Exception as e:
-                        print(e)
+                        logger.error(f"failed to extract links {e}")
 
             except Exception as e:
-                print(f"failed to fetch page {i}, {e}")
+                logger.error(f"failed to fetch page {i}, {e}")
         self.insert_links(song_links)

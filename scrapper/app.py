@@ -6,6 +6,7 @@ from scrapper.link.base_scrapper import BaseLinkScrapper
 from scrapper.data.base_scrapper import BaseDataScrapper
 from concurrent.futures import ThreadPoolExecutor, wait
 from scrapper.utils import get_links, save_data
+from logger import logger
 
 class ScrapperApp:
     db_name = "data.db"
@@ -32,6 +33,7 @@ class ScrapperApp:
             klass = getattr(ref, scrapper["class"])
             link_scrappers[scrapper["name"]] = klass(self.conn, self.session)
 
+        logger.info("Scrappers loaded")
         return data_scrappers, link_scrappers
     
     def scrap_links(self, page = 1):

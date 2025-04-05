@@ -1,5 +1,6 @@
 from scrapper.link.base_scrapper import BaseLinkScrapper
 from bs4 import BeautifulSoup
+from logger import logger
 
 class LyricsMintLinkScrapper(BaseLinkScrapper):
     scrapper_name = "lyricsmint"
@@ -36,11 +37,11 @@ class LyricsMintLinkScrapper(BaseLinkScrapper):
                             if len(links) == 30:
                                 self.insert_links(links=links)
                                 links = []
-                            print("[LINK]", link.attrs["href"])
+                            logger.info(f"found links for {link.attrs["href"]}")
                             links.append((self.scrapper_name, base_url + link.attrs["href"]))
 
                     except:
-                        print(f"failed to extract links from {album}")
+                        logger.error(f"failed to extract links from {album}")
             except:
-                print(f"failed to extract links from page {i}")
+                logger.error(f"failed to extract links from page {i}")
         self.insert_links(links=links)

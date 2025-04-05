@@ -1,4 +1,5 @@
 from sqlite3 import Connection
+from logger import logger
 
 def get_links(conn:Connection, **kwargs)-> list[tuple[str, str]]:
     query = f"select site, link from data_link "
@@ -13,4 +14,4 @@ def save_data(conn:Connection, data:list):
     query = f"insert into song_data(slug, name, lyrics, album, sungBy, lyricsBy, image, video) values(?, ?, ?, ?, ?, ?, ?, ?)"
     conn.execute(query, data)
     conn.commit()
-    print("saved -", data[0])
+    logger.info(f"saved {data[0]}")

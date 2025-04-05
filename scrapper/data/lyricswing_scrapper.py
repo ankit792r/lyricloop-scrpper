@@ -1,5 +1,5 @@
 from sqlite3 import Connection
-
+from logger import logger
 from bs4 import BeautifulSoup
 from requests import Session
 from scrapper.data.base_scrapper import BaseDataScrapper
@@ -53,4 +53,5 @@ class LyricsWingDataScrapper(BaseDataScrapper):
 
             return [slug, name, lyrics, album, sungBy, lyricsBy, thumbnail, video]
         except Exception as e:
-            print(e)
+            logger.error(f"failed to scrap {link}, {e}")
+            return None

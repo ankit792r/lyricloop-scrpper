@@ -11,7 +11,7 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PROXIES: ${{ secrets.PROXIES }}
+      PROXIES: ${{ secrets.PROXY_URL }}
       WORKERS: 150
 
     steps:

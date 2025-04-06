@@ -9,12 +9,12 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PROXIES: ${{ secrets.PROXIES }}
-      WORKERS: 150
-
     steps:
+      - name: Creating .env file
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "PROXY_URL=${{ secrets.PROXY_URL }}" >> .env
+          
       - name: Checkout code
         uses: actions/checkout@v3
 

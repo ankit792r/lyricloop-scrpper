@@ -1,11 +1,4 @@
-
-proxies:
-  http: ${{ secrets.PROXY }}
-  https: ${{ secrets.PROXY }}
-
-db_url: ${{ secrets.REMOTE_DB }}
-
-workers: ${{ env.WORKERS }}
+workers: 100
 
 data_scrappers:
   - name: lyricsmint

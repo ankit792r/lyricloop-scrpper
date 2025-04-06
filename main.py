@@ -1,14 +1,16 @@
 import yaml
-from os import environ
+from os import getenv
 from scrapper.app import ScrapperApp
+from dotenv import load_dotenv
+
+load_dotenv()
 
 with open("config.yaml", "r") as cfile:
     config = yaml.safe_load(cfile)
-    config["db_url"] = environ["DATABASE_URL"]
-    config["workers"] = int(environ["WORKERS"])
+    config["db_url"] = getenv("DATABASE_URL")
     config["proxies"] = {
-        "http": environ["PROXIES"],
-        "https": environ["PROXIES"]
+        "http": getenv("PROXY_URL"),
+        "https": getenv("PROXY_URL")
     }
 
 if __name__ == "__main__":

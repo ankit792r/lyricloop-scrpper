@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Creating .env file
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          echo "PROXY_URL=${{ secrets.PROXY_URL }}" >> .env
+          export DATABASE_URL=${{ secrets.DATABASE_URL }}
+          export PROXY_URL=${{ secrets.PROXY_URL }}
           
       - name: Checkout code
         uses: actions/checkout@v3

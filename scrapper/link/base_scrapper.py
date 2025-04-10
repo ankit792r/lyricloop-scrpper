@@ -20,16 +20,6 @@ class BaseLinkScrapper(ABC):
         self.connection.executemany(query, links)
         self.connection.commit()
 
-    def get_links(self, **kwargs):
-        query = f"select * from datalink "
-        if kwargs.get("site") is not None: query += f"where site=? "
-        if kwargs.get("limit") is not None and kwargs.get("offset") is not None: 
-            query += f"limit ? offset ?"
-
-        cursor = self.connection.execute(query, [v for _, v in kwargs.items()])
-        return [link for link in cursor.fetchall()]
-
-
 # conn = connect("temp/data.db", check_same_thread=False)
 # base = BaseLinkScrapper(connection=conn)
 # print(base.get_links(limit=1, offset=1))

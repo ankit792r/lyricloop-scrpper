@@ -31,17 +31,17 @@ class ScrapperApp:
         for scrapper in self.configs["link_scrappers"]:
             ref = import_module(scrapper["path"])
             klass = getattr(ref, scrapper["class"])
-            link_scrappers[scrapper["name"]] = klass(self.conn, self.session)
+            link_scrappers[scrapper["name"]] = klass(self.conn, self.session, scrapper["page"])
 
         logger.info("Scrappers loaded")
         return data_scrappers, link_scrappers
     
-    def scrap_links(self, page = 1):
+    def scrap_links(self):
         with ThreadPoolExecutor(max_workers=len(self.link_scrappers.keys())) as executor:
             futures = []
             for key in self.link_scrappers.keys():
                 scrapper_class:BaseLinkScrapper = self.link_scrappers[key]
-                futures.append(executor.submit(scrapper_class.extract_link, page))
+                futures.append(executor.submit(scrapper_class.extract_link))
             wait(futures)
 
     def __resolve_scrapper(self, row:tuple[str, str]):

@@ -3,6 +3,7 @@ from sqlite3 import Connection, connect
 from requests import Session
 
 class BaseLinkScrapper(ABC):
+    scrapper_name = "base_scrapper"
     table_name = "data_link"
     def __init__(self, connection: Connection, session: Session):
         self.connection = connection

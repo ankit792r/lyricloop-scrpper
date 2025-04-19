@@ -5,13 +5,14 @@ from logger import logger
 class LyricsWingLinkScrapper(BaseLinkScrapper):
     scrapper_name = "lyricswing"
 
-    def __init__(self, connection, session):
+    def __init__(self, connection, session, page):
         super().__init__(connection, session)
+        self.page = page
 
-    def extract_link(self, page:int = None):
+    def extract_link(self):
         song_links = []
 
-        for i in range(1, page):
+        for i in range(1, self.page):
             try:
                 page_data = self.session.get(f"https://lyricalwings.com/page/{i}/")
 

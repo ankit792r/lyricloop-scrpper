@@ -5,13 +5,14 @@ from logger import logger
 class LyricsMintLinkScrapper(BaseLinkScrapper):
     scrapper_name = "lyricsmint"
 
-    def __init__(self, connection, session):
+    def __init__(self, connection, session, page):
         super().__init__(connection, session)
+        self.page = page
 
-    def extract_link(self, page = None):
+    def extract_link(self):
         links = []
         base_url = "https://lyricsmint.com"
-        for i in range(1, page + 1):
+        for i in range(1, self.page):
             try:
                 album_list_page = self.session.get(f"https://lyricsmint.com/albums?page={i}")
 

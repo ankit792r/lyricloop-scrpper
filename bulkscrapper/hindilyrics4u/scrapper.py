@@ -30,8 +30,7 @@ for alpha in ascii_lowercase:
         numbers = findall(r'\d+', text)
         alpha_limit[alpha] = max(map(int, numbers)) if numbers else 1
     except:
-        print("failed for ", alpha)
-    break
+        print("failed to scrap alpha limit ", alpha)
 
 for alpha in ascii_lowercase:
     for page_num in range(1, alpha_limit[alpha] + 1):
@@ -54,16 +53,12 @@ for alpha in ascii_lowercase:
                     link_tags = album_page_soup.find_all("a", {"itemprop": "url"})
                     for link in link_tags:
                         song_links.append(f"{base_url}{link.attrs["href"]}")
-                        break
 
                 except Exception as e:
                     print(f"failed to load page ", album_page)
-                break
 
         except Exception as e:
             print(f"Failed to scrap page {page_num} and alpha {alpha}", e)
-        break
-    break
 
 def scrapp_data(song_link:str):
     try:

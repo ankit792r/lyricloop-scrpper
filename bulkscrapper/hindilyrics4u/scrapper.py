@@ -7,6 +7,7 @@ from utils import save_data, initilize_sqlite_db, upload_to_db
 from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 from os import environ
+from time import sleep
 from re import findall
 
 load_dotenv()
@@ -90,7 +91,7 @@ def scrapp_data(song_link:str):
             video = f"https://www.youtube.com/watch?v={vid_id}"
         else:
             image, video = "", ""
-
+        sleep(2)
         return [slug, name, lyrics, album, sung_by, lyrics_by, image, video]
     except Exception as e:
         print(f"failed to scrap song of {song_link}", e)

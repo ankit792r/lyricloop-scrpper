@@ -15,3 +15,7 @@ def save_data(conn:Connection, data:list):
     conn.execute(query, data)
     conn.commit()
     logger.info(f"saved {data[0]}")
+
+def initilize_sqlite_db(conn:Connection, table_name:str = "song_data"):
+    query = f"create table if not exists {table_name}(slug varchar(200), name varchar(200), lyrics varchar(255), album varchar(120), sungBy varchar(150), lyricsBy varchar(150), image varchar(200), video varchar(200))"
+    conn.execute(query)

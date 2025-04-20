@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from sqlite3 import Connection
 from requests import Session
+from scrapper.utils import initilize_sqlite_db
 
 class BaseDataScrapper(ABC):
     table_name = "song_data"
@@ -8,8 +9,7 @@ class BaseDataScrapper(ABC):
         self.connection = connection
         self.session = session
 
-        query = f"create table if not exists {self.table_name}(slug varchar(200), name varchar(200), lyrics varchar(255), album varchar(120), sungBy varchar(150), lyricsBy varchar(150), image varchar(200), video varchar(200))"
-        self.connection.execute(query)
+        initilize_sqlite_db(self.connection, self.table_name)
 
     @abstractmethod
     def scrap_data(self, link:str)-> list | None:

@@ -46,7 +46,7 @@ def worker(link:str):
 
 def extract_lyrics(db_instance, links: list[str]):
     lyrics_data = []
-    with ThreadPoolExecutor(max_workers=10, thread_name_prefix="data-extractor-") as executor:
+    with ThreadPoolExecutor(max_workers=100, thread_name_prefix="data-extractor-") as executor:
         for result in executor.map(worker, links):
             if result:
                 lyrics_data.append(result)

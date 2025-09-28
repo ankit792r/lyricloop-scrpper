@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+from database import Database
+
 BASE_URL = "https://lyricsmint.com"
 BASE_ARTIST_URL = lambda page: f"https://lyricsmint.com/artists?page={page}"
 
@@ -16,3 +18,8 @@ def extract_links(db_instance, from_page: int=1, to_page:int=10):
             db_instance.insert_links(artists_links)
         except Exception as e:
             print(e)
+
+if __name__ == "__main__":
+    db = Database()
+    extract_links(db)
+    db.close_db()

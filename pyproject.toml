@@ -6,5 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "bs4>=0.0.2",
+    "dotenv>=0.9.9",
+    "mysql-connector-python>=9.4.0",
     "requests>=2.32.5",
 ]
